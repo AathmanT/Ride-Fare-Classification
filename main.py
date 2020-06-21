@@ -8,6 +8,9 @@ import tensorflow as tf
 df = pd.read_csv("train.csv")
 df2 = pd.read_csv("test.csv")
 
+#####################################
+####### Handling missing values#####
+#####################################
 
 df = df.replace('nan',np.NaN)
 df.dropna(subset=['additional_fare','duration','meter_waiting','meter_waiting_fare','meter_waiting_till_pickup'], thresh=5,inplace=True)
@@ -19,6 +22,9 @@ y_tr = df.iloc[:,-1]
 
 df = df.drop("label", axis=1)
 
+####################################
+#####    New features  #############
+####################################
 
 a = np.sin((np.radians(df['drop_lat'])-np.radians(df['pick_lat'])) / 2) ** 2 + np.cos(df['drop_lat']) * np.cos(df['pick_lat']) * np.sin((np.radians(df['drop_lon'])-np.radians(df['pick_lon']))/ 2) ** 2
 c = 2 * np.arcsin(np.sqrt(a))
@@ -49,6 +55,10 @@ df2['effective_duration'] = df2['duration']-df2['meter_waiting']
 
 
 
+####################################
+#####    New features  #############
+####################################
+
 
 df['effective_fare'] =  df['fare']-df['meter_waiting_fare']-df['additional_fare']
 df2['effective_fare'] = df2['fare']-df2['meter_waiting_fare']-df['additional_fare']
@@ -58,7 +68,7 @@ df['pickup_time'] = pd.to_datetime(df['pickup_time'])
 df['drop_time'] = pd.to_datetime(df['drop_time'])
 
 df['day'] = df['pickup_time'].dt.dayofweek
-hello1 = df['day'].value_counts()
+count1 = df['day'].value_counts()
 
 cut_labels_4 = ['weekday', 'weekend']
 cut_bins = [-np.inf, 4, 6]
@@ -77,7 +87,7 @@ df = df.drop("day_bin", axis=1)
 #####################################################
 
 # df['hour'] = df['pickup_time'].dt.hour
-# hello2 = df['hour'].value_counts()
+# count2 = df['hour'].value_counts()
 #
 # cut_labels_4 = ['cat1', 'cat2','cat3', 'cat4','cat5', 'cat6','cat7', 'cat8']
 # cut_bins = [-np.inf,3,5,8,11,15,18,21,24]
@@ -101,13 +111,16 @@ df = df.drop("day_bin", axis=1)
 
 
 
-'''-------------------------------------------'''
+####################################
+#####    New features  #############
+####################################
+
 
 df2['pickup_time'] = pd.to_datetime(df2['pickup_time'])
 df2['drop_time'] = pd.to_datetime(df2['drop_time'])
 
 df2['day'] = df2['pickup_time'].dt.dayofweek
-hello1 = df2['day'].value_counts()
+count1 = df2['day'].value_counts()
 
 cut_labels_4 = ['weekday', 'weekend']
 cut_bins = [-np.inf, 4, 6]
@@ -127,7 +140,7 @@ df2 = df2.drop("day_bin", axis=1)
 
 #
 # df2['hour'] = df2['pickup_time'].dt.hour
-# hello2 = df2['hour'].value_counts()
+# count2 = df2['hour'].value_counts()
 #
 # cut_labels_4 = ['cat1', 'cat2','cat3', 'cat4','cat5', 'cat6','cat7', 'cat8']
 # cut_bins = [-np.inf,3,5,8,11,15,18,21,24]
@@ -150,7 +163,7 @@ df2 = df2.drop("day_bin", axis=1)
 
 
 
-'''-------------------------------------------'''
+
 
 df = df.drop(columns=['pickup_time', 'drop_time'])
 df2 = df2.drop(columns=['pickup_time', 'drop_time'])
